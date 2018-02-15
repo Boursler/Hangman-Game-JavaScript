@@ -21,7 +21,7 @@ var HangmanGame = {
 		}
 	},
 	isGuessCorrect: function (guess) {
-		if (this.hangmanWord.includes(guess) && !this.guessedLetters.includes(guess)) {
+		if (this.hangmanWord.includes(guess)) {
 			return true;
 		}
 		else {
@@ -30,13 +30,17 @@ var HangmanGame = {
 	},
 	submitGuess: function (guess) {
 		if (!this.guessedLetters.includes(guess)) {
-			this.guessedLetters.push(guess);
 			if (this.isGuessCorrect(guess)) {
 				this.correctGuessCounter++;
+				this.guessedLetters.push(guess);
 			}
 			else {
 				this.incorrectGuessesLeft--;
 			}
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 }
