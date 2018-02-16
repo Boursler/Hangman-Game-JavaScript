@@ -1,6 +1,6 @@
 
 
-var hangmanDictionary = ["word", "different", "hello", "world"]
+var hangmanDictionary = ["world"]
 var tmpWord = Array.from(hangmanDictionary[Math.floor(Math.random() * hangmanDictionary.length)]);
 
 var HangmanGame = {
@@ -12,7 +12,7 @@ var HangmanGame = {
 	revealedWord: [],
 	isGameOver: function () {
 		if (this.incorrectGuessesLeft === 0 || this.correctGuessCounter === this.hangmanWord.length) {
-			didYouWin();
+			this.didYouWin();
 			return true;
 		}
 		else {
@@ -21,7 +21,7 @@ var HangmanGame = {
 	},
 	didYouWin: function () {
 		if (this.correctGuessCounter === this.hangmanWord.length) {
-			winsCounter++;
+			this.winsCounter++;
 			return true;
 		}
 		else {
@@ -63,28 +63,41 @@ var HangmanGame = {
 	initializeGame: function (tmpWord) {
 		this.correctGuessCounter = 0;
 		this.incorrectGuessesLeft = 6;
-		this.winsCounter = 0;
 		this.hangmanWord = tmpWord;
 		this.guessedLetters = [];
 		this.revealedWord = Array(tmpWord.length).fill(" ");
 	}
 }
 var drawScreen = {
+	spanList: [],
 
-	wins: function () {
+	showWins: function () {
 		document.getElementById("numberOfWins").textContent = "You've won " + HangmanGame.winsCounter + " games";
 	},
-	loses: function () {
-		if (!didYouWin) {
-			document.getElementById("Lose").textContent = "You lose!";
-		}
-		else { };
+
+	showEnd: function () {
+		if (HangmanGame.isGameOver) {
+			if (!HangmanGame.didYouWin()) {
+				document.getElementById("Lose").textContent = "You lose!";
+			}
+			else {
+				document.getElementById("Lose").textContent = "You've won the game!";
+			};
+		};
 
 	},
-	drawWord: function () {
+	initDisplay: function () {
 		for (var i = 0; i < HangmanGame.revealedWord.length; i++) {
 			var blank = document.createElement("span");
+			this.spanList.push(blank)
 			document.getElementById("hangmanWord").appendChild(blank);
+			blank.textContent = " _ ";
+		}
+	},
+
+	drawWord: function () {
+		for (var i = 0; i < HangmanGame.revealedWord.length; i++) {
+			blank = this.spanList[i];
 			if (HangmanGame.revealedWord[i] === " ") {
 				blank.textContent = " _ ";
 			}
@@ -102,8 +115,9 @@ var drawScreen = {
 		document.getElementById("guessesLeft").textContent = "You have " + HangmanGame.incorrectGuessesLeft + "left";
 	},
 	displayGame: function () {
-		this.wins();
+		this.showWins();
 		this.showGuesses();
+		this.showEnd();
 		this.drawWord();
 		this.guessesLeft();
 
@@ -118,15 +132,24 @@ console.log("length of revealed word: " + HangmanGame.revealedWord.length);
 console.log("revealed word: " + HangmanGame.revealedWord);
 function setUpGame() {
 	HangmanGame.initializeGame(tmpWord);
+	drawScreen.initDisplay();
 	drawScreen.displayGame();
 }
 function playGame(guess) {
-	// if (!HangmanGame.isGameOver) {
+	if (!HangmanGame.isGameOver()) {
+		HangmanGame.submitGuess(guess);
+		drawScreen.displayGame();
 
-	// 	HangmanGame.submitGuess(guess);
-	// }
-	// else {
-	// 	HangmanGame.initializeGame(tmpWord);
-	//
+		console.log(guess);
+	}
+	else {
+		setUpGame();
+
+	}
 }
 setUpGame();
+document.onkeyup = function (event) {
+	// Determines which key was pressed.
+	var guess = event.key;
+	playGame(guess);
+}
