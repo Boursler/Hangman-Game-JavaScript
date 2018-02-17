@@ -10,8 +10,9 @@ var HangmanGame = {
 	hangmanWord: [],
 	guessedLetters: [],
 	revealedWord: [],
+	totalNumbersRevealed: 0,
 	isGameOver: function () {
-		if (this.incorrectGuessesLeft === 0 || this.correctGuessCounter === this.hangmanWord.length) {
+		if (this.incorrectGuessesLeft === 0 || this.totalNumbersRevealed === this.hangmanWord.length) {
 			this.didYouWin();
 			console.log(this.correctGuessCounter + "correct guesses");
 			console.log(this.hangmanWord.length + " length of word");
@@ -22,8 +23,8 @@ var HangmanGame = {
 		}
 	},
 	didYouWin: function () {
-		if (this.correctGuessCounter === this.hangmanWord.length) {
-			this.winsCounter++;
+		if (this.totalNumbersRevealed === this.hangmanWord.length) {
+
 			return true;
 		}
 		else {
@@ -39,19 +40,27 @@ var HangmanGame = {
 		}
 	},
 	reveal: function (guess) {
+		var revealedLetters = 0;
 		for (var i = 0; i < this.revealedWord.length; i++) {
+
 			if (this.hangmanWord[i] === guess) {
 				this.revealedWord[i] = guess;
+				revealedLetters++;
+				console.log("revaled letters " + revealedLetters);
 			}
 			else { };
 		}
+		return revealedLetters;
 	},
 	submitGuess: function (guess) {
+
 		if (!this.guessedLetters.includes(guess)) {
 			this.guessedLetters.push(guess);
 			if (this.isGuessCorrect(guess)) {
 				this.correctGuessCounter++;
-				this.reveal(guess);
+				// this.reveal(guess);
+				this.totalNumbersRevealed += this.reveal(guess);
+				console.log("totalNumbers revealed" + this.totalNumbersRevealed);
 			}
 			else {
 				this.incorrectGuessesLeft--;
@@ -68,6 +77,7 @@ var HangmanGame = {
 		this.hangmanWord = tmpWord;
 		this.guessedLetters = [];
 		this.revealedWord = Array(tmpWord.length).fill(" ");
+		this.totalNumbersRevealed = 0;
 	}
 }
 var drawScreen = {
@@ -140,8 +150,8 @@ var drawScreen = {
 console.log(HangmanGame.hangmanWord);
 
 function setUpGame() {
-	HangmanGame.initializeGame(tmpWord);
 
+	HangmanGame.initializeGame(tmpWord);
 	drawScreen.initDisplay();
 	drawScreen.displayGame();
 }
@@ -153,6 +163,9 @@ function playGame(guess) {
 
 	}
 	else {
+		if (HangmanGame.didYouWin()) {
+			HangmanGame.winsCounter++
+		}
 		setUpGame();
 
 	}
@@ -160,6 +173,11 @@ function playGame(guess) {
 setUpGame();
 document.onkeyup = function (event) {
 	// Determines which key was pressed.
-	var guess = event.key;
-	playGame(guess);
+	var guess = event.key.toLowerCase();
+	if (('a' <= guess && guess <= 'z') && guess.length === 1) {
+		playGame(guess);
+	}
+	else {
+
+	}
 }
