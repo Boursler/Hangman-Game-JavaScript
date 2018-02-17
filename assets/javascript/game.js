@@ -1,6 +1,6 @@
 
 
-var hangmanDictionary = ["world"]
+var hangmanDictionary = ["different"]
 var tmpWord = Array.from(hangmanDictionary[Math.floor(Math.random() * hangmanDictionary.length)]);
 
 var HangmanGame = {
@@ -13,6 +13,8 @@ var HangmanGame = {
 	isGameOver: function () {
 		if (this.incorrectGuessesLeft === 0 || this.correctGuessCounter === this.hangmanWord.length) {
 			this.didYouWin();
+			console.log(this.correctGuessCounter + "correct guesses");
+			console.log(this.hangmanWord.length + " length of word");
 			return true;
 		}
 		else {
@@ -84,7 +86,10 @@ var drawScreen = {
 			else {
 				document.getElementById("Lose").textContent = "You've won the game!";
 			};
-		};
+		}
+		else {
+			document.getElementById("Lose").textContent = "";
+		}
 
 	},
 	initDisplay: function () {
@@ -145,7 +150,7 @@ function playGame(guess) {
 		HangmanGame.submitGuess(guess);
 		drawScreen.displayGame();
 
-		console.log(guess);
+
 	}
 	else {
 		setUpGame();
