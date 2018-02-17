@@ -76,7 +76,8 @@ var drawScreen = {
 	},
 
 	showEnd: function () {
-		if (HangmanGame.isGameOver) {
+		if (HangmanGame.isGameOver()) {
+			console.log("show ends condition " + HangmanGame.isGameOver());
 			if (!HangmanGame.didYouWin()) {
 				document.getElementById("Lose").textContent = "You lose!";
 			}
@@ -87,6 +88,13 @@ var drawScreen = {
 
 	},
 	initDisplay: function () {
+		parent = document.getElementById("hangmanWord");
+		while (parent.hasChildNodes()) {
+			parent.removeChild(parent.childNodes[0]);
+		}
+
+		this.spanList = [];
+
 		for (var i = 0; i < HangmanGame.revealedWord.length; i++) {
 			var blank = document.createElement("span");
 			this.spanList.push(blank)
@@ -103,7 +111,7 @@ var drawScreen = {
 			}
 			else {
 				blank.textContent = HangmanGame.revealedWord[i];
-				console.log("text content is: " + HangmanGame.revealedWord[i]);
+
 			}
 
 		}
@@ -125,13 +133,10 @@ var drawScreen = {
 }
 
 console.log(HangmanGame.hangmanWord);
-console.log("length of revealed word: " + HangmanGame.revealedWord.length);
 
-
-
-console.log("revealed word: " + HangmanGame.revealedWord);
 function setUpGame() {
 	HangmanGame.initializeGame(tmpWord);
+
 	drawScreen.initDisplay();
 	drawScreen.displayGame();
 }
