@@ -1,0 +1,23 @@
+/* Background pattern from Subtle Patterns */
+body{
+
+background-image: url("../images/regal.png");
+	font-family: 'Tangerine', cursive;
+}
+.container{
+	background-image: url("../images/United_States_Declaration_of_Independence.png");
+	background-size: cover;
+	height: 1000px;
+}
+h1{
+	font-size: 5em;
+}
+.jumbotron{
+	background-image: url("../images/regal.png");
+	width: 80%;
+	margin: auto;
+
+}
+header{
+	height: 250px;
+}

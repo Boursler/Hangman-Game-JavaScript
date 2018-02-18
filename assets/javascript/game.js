@@ -82,7 +82,7 @@ var HangmanGame = {
 }
 var drawScreen = {
 	spanList: [],
-
+	winSound: document.createElement("audio"),
 	showWins: function () {
 		document.getElementById("numberOfWins").textContent = "You've won " + HangmanGame.winsCounter + " games";
 	},
@@ -95,7 +95,10 @@ var drawScreen = {
 			}
 			else {
 				document.getElementById("Lose").textContent = "You've won the game!";
-			};
+
+				this.winSound.setAttribute("src", "assets/images/old-fashioned-school-bell-daniel_simon.mp3");
+				this.winSound.play();
+			}
 		}
 		else {
 			document.getElementById("Lose").textContent = "";
@@ -116,6 +119,7 @@ var drawScreen = {
 			document.getElementById("hangmanWord").appendChild(blank);
 			blank.textContent = " _ ";
 		}
+		this.winSound.pause();
 	},
 
 	drawWord: function () {
