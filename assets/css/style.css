@@ -8,9 +8,19 @@ background-image: url("../images/regal.png");
 	background-image: url("../images/United_States_Declaration_of_Independence.png");
 	background-size: cover;
 	height: 900px;
+
+}
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
 }
 h1{
 	font-size: 5em;
+	text-align: center;
+}
+#hangmanWord{
+	text-align: center;
 }
 .jumbotron{
 	background-image: url("../images/concrete_seamless.png ");

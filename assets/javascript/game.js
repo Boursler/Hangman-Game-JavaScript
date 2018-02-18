@@ -3,14 +3,14 @@
 var hangmanDictionary = ["loyalist", "tea", "harbor", "tory", "thirteen", "declaration", "independence", "happiness", "jacobin", "colony", "representation", "massacre", "guerilla", "constitution", "townshend", "intolerable", "proclamation", "federalist", "institute", "abolish"];
 
 var HangmanGame = {
-	//set properties of HangmanGame object
+	//set properties and methods of HangmanGame object for game logic
 	incorrectGuessesLeft: 0,
 	winsCounter: 0,
 	hangmanWord: [],
 	guessedLetters: [],
 	revealedWord: [],
 	totalNumbersRevealed: 0,
-	//begin list of HangmanGame metods
+
 	//check if Game is Over
 	isGameOver: function () {
 		if (this.incorrectGuessesLeft === 0 || this.totalNumbersRevealed === this.hangmanWord.length) {
@@ -42,7 +42,7 @@ var HangmanGame = {
 		}
 	},
 	//if a guess is correct, add it to the revealed word at the desired index
-	//returns number of letters revealed by each check
+	//return number of letters revealed by each check
 	reveal: function (guess) {
 		var revealedLetters = 0;
 		for (var i = 0; i < this.revealedWord.length; i++) {
@@ -50,13 +50,12 @@ var HangmanGame = {
 			if (this.hangmanWord[i] === guess) {
 				this.revealedWord[i] = guess;
 				revealedLetters++;
-				console.log("revaled letters " + revealedLetters);
 			}
 			else { };
 		}
 		return revealedLetters;
 	},
-	//submit a user guess to the game: check if guess is correct, add
+	//submit a user guess to the game: add guess to guessed letters if it hasn't been guessed already, check if guess is correct, call reveal() and add result to find win condition, finally decrement guesses left if user is wrong
 	submitGuess: function (guess) {
 
 		if (!this.guessedLetters.includes(guess)) {
@@ -65,7 +64,6 @@ var HangmanGame = {
 
 				// this.reveal(guess);
 				this.totalNumbersRevealed += this.reveal(guess);
-				console.log("totalNumbers revealed" + this.totalNumbersRevealed);
 			}
 			else {
 				this.incorrectGuessesLeft--;
@@ -76,6 +74,7 @@ var HangmanGame = {
 			return false;
 		}
 	},
+	//set opening game conditions
 	initializeGame: function (tmpWord) {
 		this.incorrectGuessesLeft = 6;
 		this.hangmanWord = tmpWord;
@@ -84,16 +83,17 @@ var HangmanGame = {
 		this.totalNumbersRevealed = 0;
 	}
 }
+//object for user interface properties and methods
 var drawScreen = {
 	spanList: [],
 	winSound: document.createElement("audio"),
+	//Display number of times user has won in this browsing session
 	showWins: function () {
 		document.getElementById("numberOfWins").textContent = "You've won " + HangmanGame.winsCounter + " games";
 	},
-
+	//ask user to keep playing if game is over. If user loses display word user should have guessed . If user wins play the winning sound and display win statement.
 	showEnd: function () {
 		if (HangmanGame.isGameOver()) {
-			console.log("show ends condition " + HangmanGame.isGameOver());
 			document.getElementById("submitId").textContent = "Type the Any key to continue";
 			if (!HangmanGame.didYouWin()) {
 				document.getElementById("Lose").textContent = "You lose!";
@@ -101,18 +101,19 @@ var drawScreen = {
 			}
 			else {
 				document.getElementById("Lose").textContent = "You've won the game!";
-
 				this.winSound.setAttribute("src", "assets/images/old-fashioned-school-bell-daniel_simon.mp3");
 				this.winSound.play();
 			}
 
 		}
+		//sets value to empty so the user is not being told that they won or that they lost while they are playing
 		else {
 			document.getElementById("Lose").textContent = "";
 		}
 
 
 	},
+	//set initial display values: span elements are removed if there was a previous game, new span elements are created and initialized to blank, pause win sound, and ask the user to submit a guess
 	initDisplay: function () {
 		parent = document.getElementById("hangmanWord");
 		while (parent.hasChildNodes()) {
@@ -130,7 +131,7 @@ var drawScreen = {
 		this.winSound.pause();
 		document.getElementById("submitId").textContent = "Submit a guess by typing in a letter!";
 	},
-
+	//update the spans as the user guesses correctly, at the correct index to display the finished word
 	drawWord: function () {
 		for (var i = 0; i < HangmanGame.revealedWord.length; i++) {
 			blank = this.spanList[i];
@@ -144,23 +145,25 @@ var drawScreen = {
 
 		}
 	},
+	//show the previously guessed letters
 	showGuesses: function () {
 		var list = "  ";
 		for (var i = 0; i < HangmanGame.guessedLetters.length; i++) {
 			list += " " + HangmanGame.guessedLetters[i].toString() + " ";
 		}
 		document.getElementById("previousGuesses").textContent = "Previously guessed:  \n" + list;
-
-
 	},
+	//Displays remaining guesses available to user
 	guessesLeft: function () {
 		document.getElementById("guessesLeft").textContent = "You have " + HangmanGame.incorrectGuessesLeft + " guesses left";
 	},
+	//displays the user's current guess
 	currentGuess: function (guess) {
 		var youGuess = document.getElementById("youGuessed")
 		youGuess.textContent = guess;
-		youGuess.setAttribute("style", "font-size: 3em;");
+		youGuess.setAttribute("style", "font-size: 3em; text-align: center;");
 	},
+	//calls methods necessary to display the game
 	displayGame: function (guess) {
 		this.showWins();
 		this.showGuesses();
@@ -171,16 +174,14 @@ var drawScreen = {
 
 	}
 }
-
-console.log(HangmanGame.hangmanWord);
-
+//initialize the word for the game to a random choice from the globally declared hangmanDictionary, then initialize the game logic, set up the initial display of the game, and call necessary display methods
 function setUpGame() {
 	var tmpWord = Array.from(hangmanDictionary[Math.floor(Math.random() * hangmanDictionary.length)]);
-
 	HangmanGame.initializeGame(tmpWord);
 	drawScreen.initDisplay();
 	drawScreen.displayGame();
 }
+//play the game: if the game is not over, submit guesses and draw the screen; if the game is over, update the winsCounter if the user won and then set up another game
 function playGame(guess) {
 	if (!HangmanGame.isGameOver()) {
 		HangmanGame.submitGuess(guess);
@@ -196,10 +197,13 @@ function playGame(guess) {
 
 	}
 }
+//set up an initial hangman game
 setUpGame();
+//get user's input
 document.onkeyup = function (event) {
 	// Determines which key was pressed.
 	var guess = event.key.toLowerCase();
+	//make sure the input is a letter
 	if (('a' <= guess && guess <= 'z') && guess.length === 1) {
 		playGame(guess);
 	}
