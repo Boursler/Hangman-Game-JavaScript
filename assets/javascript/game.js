@@ -1,27 +1,28 @@
 
 
-var hangmanDictionary = ["different"]
-var tmpWord = Array.from(hangmanDictionary[Math.floor(Math.random() * hangmanDictionary.length)]);
+var hangmanDictionary = ["loyalist", "tea", "harbor", "tory", "thirteen", "declaration", "independence", "happiness", "jacobin", "colony", "representation", "massacre", "guerilla", "constitution", "townshend", "intolerable", "proclamation", "federalist", "institute", "abolish"];
 
 var HangmanGame = {
-	correctGuessCounter: 0,
+	//set properties of HangmanGame object
 	incorrectGuessesLeft: 0,
 	winsCounter: 0,
 	hangmanWord: [],
 	guessedLetters: [],
 	revealedWord: [],
 	totalNumbersRevealed: 0,
+	//begin list of HangmanGame metods
+	//check if Game is Over
 	isGameOver: function () {
 		if (this.incorrectGuessesLeft === 0 || this.totalNumbersRevealed === this.hangmanWord.length) {
+			//check if player won
 			this.didYouWin();
-			console.log(this.correctGuessCounter + "correct guesses");
-			console.log(this.hangmanWord.length + " length of word");
 			return true;
 		}
 		else {
 			return false;
 		}
 	},
+	//check if player won
 	didYouWin: function () {
 		if (this.totalNumbersRevealed === this.hangmanWord.length) {
 
@@ -31,6 +32,7 @@ var HangmanGame = {
 			return false;
 		}
 	},
+	//check if submitted guess is correct
 	isGuessCorrect: function (guess) {
 		if (this.hangmanWord.includes(guess)) {
 			return true;
@@ -39,6 +41,8 @@ var HangmanGame = {
 			return false;
 		}
 	},
+	//if a guess is correct, add it to the revealed word at the desired index
+	//returns number of letters revealed by each check
 	reveal: function (guess) {
 		var revealedLetters = 0;
 		for (var i = 0; i < this.revealedWord.length; i++) {
@@ -52,12 +56,13 @@ var HangmanGame = {
 		}
 		return revealedLetters;
 	},
+	//submit a user guess to the game: check if guess is correct, add
 	submitGuess: function (guess) {
 
 		if (!this.guessedLetters.includes(guess)) {
 			this.guessedLetters.push(guess);
 			if (this.isGuessCorrect(guess)) {
-				this.correctGuessCounter++;
+
 				// this.reveal(guess);
 				this.totalNumbersRevealed += this.reveal(guess);
 				console.log("totalNumbers revealed" + this.totalNumbersRevealed);
@@ -72,7 +77,6 @@ var HangmanGame = {
 		}
 	},
 	initializeGame: function (tmpWord) {
-		this.correctGuessCounter = 0;
 		this.incorrectGuessesLeft = 6;
 		this.hangmanWord = tmpWord;
 		this.guessedLetters = [];
@@ -90,8 +94,10 @@ var drawScreen = {
 	showEnd: function () {
 		if (HangmanGame.isGameOver()) {
 			console.log("show ends condition " + HangmanGame.isGameOver());
+			document.getElementById("submitId").textContent = "Type the Any key to continue";
 			if (!HangmanGame.didYouWin()) {
 				document.getElementById("Lose").textContent = "You lose!";
+				document.getElementById("hangmanWord").textContent = HangmanGame.hangmanWord.join("");
 			}
 			else {
 				document.getElementById("Lose").textContent = "You've won the game!";
@@ -99,10 +105,12 @@ var drawScreen = {
 				this.winSound.setAttribute("src", "assets/images/old-fashioned-school-bell-daniel_simon.mp3");
 				this.winSound.play();
 			}
+
 		}
 		else {
 			document.getElementById("Lose").textContent = "";
 		}
+
 
 	},
 	initDisplay: function () {
@@ -120,6 +128,7 @@ var drawScreen = {
 			blank.textContent = " _ ";
 		}
 		this.winSound.pause();
+		document.getElementById("submitId").textContent = "Submit a guess by typing in a letter!";
 	},
 
 	drawWord: function () {
@@ -136,17 +145,29 @@ var drawScreen = {
 		}
 	},
 	showGuesses: function () {
-		document.getElementById("previousGuesses").textContent = "You've guessed " + HangmanGame.guessedLetters + " letters";
+		var list = "  ";
+		for (var i = 0; i < HangmanGame.guessedLetters.length; i++) {
+			list += " " + HangmanGame.guessedLetters[i].toString() + " ";
+		}
+		document.getElementById("previousGuesses").textContent = "Previously guessed:  \n" + list;
+
+
 	},
 	guessesLeft: function () {
-		document.getElementById("guessesLeft").textContent = "You have " + HangmanGame.incorrectGuessesLeft + "left";
+		document.getElementById("guessesLeft").textContent = "You have " + HangmanGame.incorrectGuessesLeft + " guesses left";
 	},
-	displayGame: function () {
+	currentGuess: function (guess) {
+		var youGuess = document.getElementById("youGuessed")
+		youGuess.textContent = guess;
+		youGuess.setAttribute("style", "font-size: 3em;");
+	},
+	displayGame: function (guess) {
 		this.showWins();
 		this.showGuesses();
 		this.showEnd();
 		this.drawWord();
 		this.guessesLeft();
+		this.currentGuess(guess);
 
 	}
 }
@@ -154,6 +175,7 @@ var drawScreen = {
 console.log(HangmanGame.hangmanWord);
 
 function setUpGame() {
+	var tmpWord = Array.from(hangmanDictionary[Math.floor(Math.random() * hangmanDictionary.length)]);
 
 	HangmanGame.initializeGame(tmpWord);
 	drawScreen.initDisplay();
@@ -162,7 +184,7 @@ function setUpGame() {
 function playGame(guess) {
 	if (!HangmanGame.isGameOver()) {
 		HangmanGame.submitGuess(guess);
-		drawScreen.displayGame();
+		drawScreen.displayGame(guess);
 
 
 	}
