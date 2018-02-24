@@ -151,7 +151,7 @@ var drawScreen = {
 		for (var i = 0; i < HangmanGame.guessedLetters.length; i++) {
 			list += " " + HangmanGame.guessedLetters[i].toString() + " ";
 		}
-		document.getElementById("previousGuesses").textContent = "Previously guessed:  \n" + list;
+		document.getElementById("previousGuesses").textContent = "Previously guessed: " + list;
 	},
 	//Displays remaining guesses available to user
 	guessesLeft: function () {
@@ -161,7 +161,7 @@ var drawScreen = {
 	currentGuess: function (guess) {
 		var youGuess = document.getElementById("youGuessed")
 		youGuess.textContent = guess;
-		youGuess.setAttribute("style", "font-size: 3em; text-align: center;");
+		youGuess.setAttribute("style", "font-size: 3em;");
 	},
 	//calls methods necessary to display the game
 	displayGame: function (guess) {

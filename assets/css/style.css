@@ -1,13 +1,18 @@
 /* Background pattern from Subtle Patterns */
+html, body
+{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 body{
-
-background-image: url("../images/regal.png");
+	background-image: url("../images/regal.png");
 	font-family: 'Tangerine', cursive;
 }
 .container{
 	background-image: url("../images/United_States_Declaration_of_Independence.png");
 	background-size: cover;
-	height: 900px;
+	height: 100%;
 
 }
 .clearfix::after {
