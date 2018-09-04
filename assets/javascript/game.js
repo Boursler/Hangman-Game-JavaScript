@@ -115,12 +115,11 @@ var drawScreen = {
 	},
 	//set initial display values: span elements are removed if there was a previous game, new span elements are created and initialized to blank, pause win sound, and ask the user to submit a guess
 	initDisplay: function () {
+		this.spanList = [];
 		parent = document.getElementById("hangmanWord");
 		while (parent.hasChildNodes()) {
 			parent.removeChild(parent.childNodes[0]);
 		}
-
-		this.spanList = [];
 
 		for (var i = 0; i < HangmanGame.revealedWord.length; i++) {
 			var blank = document.createElement("span");
